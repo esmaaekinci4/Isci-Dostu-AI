@@ -1,5 +1,5 @@
 // KESİN ÇÖZÜM KODU - script.js içeriğine yapıştır
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
 
 async function sendMessageToGemini(userInput, apiKey) {
     const response = await fetch(`${API_URL}?key=${apiKey}`, {
