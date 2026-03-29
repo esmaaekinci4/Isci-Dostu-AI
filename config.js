@@ -4,4 +4,4 @@
  *
  * Model ve API sürümü script.js içinde sabittir (GEMINI_MODEL_FIXED, v1).
  */
-window.GEMINI_API_KEY = window.GEMINI_API_KEY || "";
+window.GEMINI_API_KEY = window.GEMINI_API_KEY || "AIzaSyAdVeNnxgsqvY1dbY2tzo6LRdb7ltW_rY4";
