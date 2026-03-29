@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="İşçi Dostu AI — İş hayatı hakları ve İSG rehberliği"
+    />
+    <title>Kontrol paneli — İşçi Dostu AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-bg" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="header-brand">
+          <a href="#" class="logo" aria-label="Ana sayfa">
+            <span class="logo-mark" aria-hidden="true">
+              <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+                <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="logo-text">İşçi Dostu AI</span>
+          </a>
+          <span class="header-divider" aria-hidden="true"></span>
+          <span class="header-product">İş sağlığı &amp; güvenliği</span>
+        </div>
+        <div class="header-actions">
+          <span class="api-pill" id="api-status-pill" data-state="unset">
+            <span class="api-pill-dot" aria-hidden="true"></span>
+            <span id="api-status-label">API yapılandır</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="main container">
+      <header class="page-head">
+        <p class="page-kicker">Kontrol paneli</p>
+        <h1 class="page-title">Günlük İSG hatırlatmaları</h1>
+        <p class="page-desc">
+          Meslek grubunu seçerek günlük İSG ipucunu görüntüleyin; sözleşme metnini analiz edin veya hukuk asistanına soru sorun. Gemini API anahtarı gereklidir.
+        </p>
+      </header>
+
+      <ul class="stat-strip" aria-label="Özet">
+        <li class="stat-item">
+          <span class="stat-value">6331</span>
+          <span class="stat-label">İSG kanunu referansı</span>
+        </li>
+        <li class="stat-item">
+          <span class="stat-value">4857</span>
+          <span class="stat-label">İş Kanunu referansı</span>
+        </li>
+        <li class="stat-item">
+          <span class="stat-value" id="stat-profession-label">—</span>
+          <span class="stat-label">Seçili sektör</span>
+        </li>
+      </ul>
+
+      <details class="card card-api" id="api-config-details">
+        <summary class="card-api-summary">
+          <span class="card-api-title">Gemini API bağlantısı</span>
+          <span class="card-api-hint">Google AI Studio anahtarı</span>
+        </summary>
+        <div class="card-api-body">
+          <p class="card-api-lead">
+            Anahtarınızı tarayıcıda saklamak için aşağıya yapıştırıp kaydedin; veya <code class="inline-code">config.js</code> içinde <code class="inline-code">GEMINI_API_KEY</code> tanımlayın (sayfa yüklemeden önce).
+          </p>
+          <label class="field-label" for="api-key-input">API anahtarı</label>
+          <input
+            id="api-key-input"
+            class="input input-mono"
+            type="password"
+            autocomplete="off"
+            placeholder="AI Studio’dan oluşturduğunuz anahtar"
+            spellcheck="false"
+          />
+          <div class="field-row">
+            <label class="field-label" for="api-model-input">Model (kodda sabit)</label>
+            <input
+              id="api-model-input"
+              class="input input-mono"
+              type="text"
+              readonly
+              autocomplete="off"
+              spellcheck="false"
+              title="Model adı script.js içinde GEMINI_MODEL_FIXED sabitidir"
+            />
+            <p class="field-hint">
+              Tüm istekler <code class="inline-code">v1</code> ve <code class="inline-code">gemini-1.5-flash</code> ile gider; değiştirmek için <code class="inline-code">script.js</code> dosyasını düzenleyin.
+            </p>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="api-save-btn">Kaydet</button>
+            <button type="button" class="btn btn-secondary" id="api-test-btn">Bağlantıyı test et</button>
+            <button type="button" class="btn btn-ghost" id="api-clear-btn" title="Tarayıcıda saklanan anahtarı sil">Temizle</button>
+          </div>
+          <p class="api-result" id="api-test-result" role="status" aria-live="polite"></p>
+        </div>
+      </details>
+
+      <section class="dashboard-grid" aria-label="Ana panel">
+        <div class="card card-panel">
+          <div class="panel-head">
+            <span class="panel-icon panel-icon--job" aria-hidden="true"></span>
+            <div>
+              <h2 class="card-title">Meslek grubu</h2>
+              <p class="panel-sub">Sektörünüze göre günlük hatırlatma</p>
+            </div>
+          </div>
+          <label class="field-label" for="profession-select">Sektör / meslek</label>
+          <select id="profession-select" class="select" name="profession">
+            <option value="">Seçiniz…</option>
+            <option value="insaat">İnşaat &amp; yapı</option>
+            <option value="saglik">Sağlık</option>
+            <option value="fabrika">Fabrika &amp; üretim</option>
+            <option value="ofis">Ofis &amp; bilişim</option>
+            <option value="perakende">Perakende &amp; hizmet</option>
+            <option value="ulasim">Ulaşım &amp; lojistik</option>
+            <option value="tarim">Tarım</option>
+            <option value="genel">Diğer / genel</option>
+          </select>
+        </div>
+
+        <div class="card card-tip" id="tip-card" hidden>
+          <div class="tip-badge" aria-hidden="true">Bugün</div>
+          <h2 class="card-title">Günlük İSG ipucu</h2>
+          <p class="tip-text" id="daily-tip-text" role="status"></p>
+        </div>
+
+        <div class="card card-hint" id="tip-hint" aria-live="polite">
+          <p class="hint-text">
+            Soldan meslek grubunu seçtiğinizde bugüne özel kısa bir iş güvenliği hatırlatması burada görünür.
+          </p>
+        </div>
+      </section>
+
+      <section class="section-block" id="sozlesme-analizcisi" aria-labelledby="contract-title">
+        <div class="section-head">
+          <p class="page-kicker">Yapay zekâ analizi</p>
+          <h2 class="section-title" id="contract-title">Sözleşme Analizcisi</h2>
+          <p class="section-lead">
+            İş sözleşmesi metnini yapıştırın; model metni 4857 İş Kanunu çerçevesinde özetler ve maddeleri risk seviyesine göre işaretler.
+          </p>
+        </div>
+        <div class="card card-contract">
+          <ul class="risk-legend" aria-label="Risk göstergeleri">
+            <li><span class="risk-emoji" aria-hidden="true">🟢</span> Güvenli — standart / çalışan lehine görünen</li>
+            <li><span class="risk-emoji" aria-hidden="true">🟡</span> Dikkat — belirsiz veya dikkatle okunmalı</li>
+            <li><span class="risk-emoji" aria-hidden="true">🔴</span> Riskli — çalışan aleyhine veya şüpheli</li>
+          </ul>
+          <label class="field-label" for="contract-text">Sözleşme metni</label>
+          <textarea
+            id="contract-text"
+            class="textarea"
+            rows="10"
+            placeholder="İş sözleşmenizin metnini buraya yapıştırın…"
+            spellcheck="true"
+          ></textarea>
+          <div class="btn-row contract-actions">
+            <button type="button" class="btn btn-primary" id="contract-analyze-btn">
+              Analiz et
+            </button>
+            <button type="button" class="btn btn-secondary" id="contract-clear-btn">
+              Metni temizle
+            </button>
+          </div>
+          <p class="contract-status" id="contract-status" role="status" aria-live="polite"></p>
+          <div class="contract-output-wrap" id="contract-output-wrap" hidden>
+            <h3 class="contract-output-title">Analiz sonucu</h3>
+            <div class="contract-output" id="contract-output"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block section-block--chat" id="hukuk-chatbot" aria-labelledby="chat-title">
+        <div class="section-head">
+          <p class="page-kicker">Soru-cevap</p>
+          <h2 class="section-title" id="chat-title">Hukuk Chatbotu</h2>
+          <p class="section-lead">
+            İş Kanunu ve İSG konularında sorunuzu yazın; yanıtlar sade Türkçe ile özetlenir. Kesin hukuki danışmanlık yerine geçmez.
+          </p>
+        </div>
+        <div class="card card-chat">
+          <div class="chat-messages" id="chat-messages" aria-live="polite" aria-relevant="additions">
+            <div class="chat-msg chat-msg--bot chat-msg--intro">
+              <p>
+                Merhaba, ben Hak Asistanı. Yıllık izin, fazla mesai, ihbar, iş güvenliği ve benzeri konularda sorularınızı yazabilirsiniz.
+                Cevaplarım bilgilendirme amaçlıdır; önemli işlemlerde bir hukuk uzmanına danışmanızı öneririm.
+              </p>
+            </div>
+          </div>
+          <div class="chat-compose">
+            <label class="visually-hidden" for="chat-input">Sorunuz</label>
+            <textarea
+              id="chat-input"
+              class="textarea textarea--chat"
+              rows="2"
+              placeholder="Örn: Haftalık dinlenme hakkım nedir?"
+              spellcheck="true"
+            ></textarea>
+            <div class="chat-compose-actions">
+              <button type="button" class="btn btn-secondary" id="chat-clear-btn">Sohbeti temizle</button>
+              <button type="button" class="btn btn-primary" id="chat-send-btn">Gönder</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <small>4857 ve 6331 sayılı kanunlara dayalı bilgilendirme — hukuki danışmanlık değildir.</small>
+      </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="script.js" defer></script>
+  </body>
+</html>
