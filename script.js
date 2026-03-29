@@ -11,7 +11,7 @@
   // --- Sabitler ---
   const LS_API_KEY = "iscidostu_gemini_api_key";
   /** Kararlı REST: v1 — https://ai.google.dev/gemini-api/docs/api-versions */
-  const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1/models";
+  const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
   /** Uygulama genelinde sabit model (değiştirmek için bu satırı düzenleyin) */
   const GEMINI_MODEL_FIXED = "gemini-1.5-flash";
 
@@ -176,7 +176,7 @@
         "», API: v1. " +
         "Google AI Studio’da API anahtarınızın bağlı olduğu projede bu modelin açık olduğunu doğrulayın; " +
         "gerekirse ListModels ile kullanılabilir modelleri kontrol edin: " +
-        "https://ai.google.dev/api/rest/v1/models/list"
+        "https://ai.google.dev/api/rest/v1beta/models/list"
       );
     }
     if (
